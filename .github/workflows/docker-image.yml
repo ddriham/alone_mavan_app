@@ -1,0 +1,39 @@
+name: creat an image and push to Docker_hub
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag alone_maven_app:latest
+    - name: run 
+      run: docker run -itd --name alone_maven_app -p 80:3333 alone_maven_app:latest
+    - name: test
+      run: sleep 5
+      run: |
+        output=$(docker logs alone_maven_app:latest 2>&1)
+        echo "$output"
+        if [[ "$output" == *"Hello, world!"* ]]; then
+          echo "Test passed: Hello, world! found in the container logs."
+        else
+          echo "Test failed: Hello, world! not found in the container logs."
+          exit 1
+        fi
+    - name: change image name
+      run: docker tag alone_maven_app:latest ddriham/alone_maven_app:latest
+    - name: docker login
+      uses: docker/login-action@v2
+      with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: docker push 
+      run: docker push ddriham/alone_maven_app:latest
+      
+
