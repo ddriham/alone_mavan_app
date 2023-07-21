@@ -1,0 +1,14 @@
+version: '3.8'  # You can use the appropriate version that your system supports
+
+services:
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:3333"
+    networks:
+      - mynet
+
+networks:
+  mynet:
