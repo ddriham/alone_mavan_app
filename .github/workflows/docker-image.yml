@@ -16,8 +16,8 @@ jobs:
     - name: run 
       run: docker run -itd --name alone_maven_app -p 80:3333 alone_maven_app:latest
     - name: test
-      run: sleep 5
-      run: |
+      run: | 
+        sleep 5
         output=$(docker logs alone_maven_app:latest 2>&1)
         echo "$output"
         if [[ "$output" == *"Hello, world!"* ]]; then
@@ -35,5 +35,3 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: docker push 
       run: docker push ddriham/alone_maven_app:latest
-      
-
